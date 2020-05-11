@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
+
+
 namespace tabuleiro
 {
     class Tabuleiro
@@ -23,6 +25,12 @@ namespace tabuleiro
         {
             return pecas[linha, coluna]; 
         }
+
+        public void colocarPeca(Peca p, Posicao pos)   // Método para colocar peca no tabuleiro
+        {
+            pecas[pos.linha, pos.coluna] = p; // Acede a matriz na linha pos.linha, pos.coluna e recebe a peca p .
+            p.posicao = pos;  // Informa a posicao da peça p na posição pos.
+        } 
 
     }
 }
