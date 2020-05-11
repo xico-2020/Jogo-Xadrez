@@ -16,7 +16,7 @@ namespace xadrez
             this.linha = linha;
         }
 
-        public Posicao toPosicao()
+        public Posicao toPosicao() // Converte as linhas 1- 8 e colunas a - h nas posições 0 - 7 da tabela.
         {
             return new Posicao(8 - linha, coluna - 'a'); // converte o numero da linha na posicao da tabela 
                          // (ex. posicao 3 tabuleiro é 8-3= 5 na tabela (sendo que linha 8 = pos 0 e linha 1 = pos 7).
