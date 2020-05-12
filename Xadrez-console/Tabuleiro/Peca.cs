@@ -5,7 +5,7 @@ using xadrez;
 
 namespace tabuleiro
 {
-    class Peca
+    abstract class Peca  // Classe abstrata pois tem pelo menos um método abstrato (movimentosPossiveis, neste caso).
     {
         public Posicao posicao { get; set; }
         public Cor cor { get; protected set; } // Pode ser acedida por qualquer classe, mas só modificada por si e pela sua subclasse.
@@ -26,5 +26,7 @@ namespace tabuleiro
             qteMovimentos++;
         }
 
+        public abstract bool[,] movimentosPossiveis();   // Método abstrato pois não tem implementação nesta Classe. Matriz de valores pois vai informar se a posição da peça a mover pode ser ou não. Retorna Verdadeiro ou Falso.
+       
     }
 }

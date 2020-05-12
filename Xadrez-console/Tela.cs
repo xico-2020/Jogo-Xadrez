@@ -8,30 +8,48 @@ namespace Xadrez_console
 {
     class Tela
     {
-        public static void imprimirTabuleiro(Tabuleiro tab) // Chmada de método que vai mostrar o tabuleiro.
+        public static void imprimirTabuleiro(Tabuleiro tab) // Chamada de método que vai mostrar o tabuleiro.
         {
-
+            Console.WriteLine();
             for (int i = 0; i < tab.linhas; i++)
             {
-                Console.Write(8 - i + " ");
+                Console.Write(" " + (8 - i) + " ");
                 for (int j = 0; j < tab.colunas; j++)
                 {
-                    if (tab.peca(i, j) == null)
-                    {
-                        Console.Write("- ");
-                    }
-                    else
-                    {
-                        imprimirPeca(tab.peca(i, j));
-                        Console.Write(" ");
-                        /*Console.Write(tab.peca(i, j) + " "); // (tab.peca) - Chama o metodo peca no objeto tab em Tabuleiro.
-                              // Este método foi criado pois como Peca é private, não permite acesso a ela fora da classe.*/
-                    }
-                    
+                    imprimirPeca(tab.peca(i, j));
+                    /*imprimirPeca(tab.peca(i, j) + " "); // (tab.peca) - Chama o metodo peca no objeto tab em Tabuleiro(ver acima).
+                          // Este método foi criado pois como Peca é private, não permite acesso a ela fora da classe.*/
                 }
                 Console.WriteLine();
             }
-            Console.WriteLine("  a b c d e f g h");
+            Console.WriteLine("   a b c d e f g h");
+        }
+        public static void imprimirTabuleiro(Tabuleiro tab, bool[,] posicoesPossiveis) // Sobrecarga do método para passar a matriz bool com as posições possiveis.
+        {
+            ConsoleColor fundoOriginal = Console.BackgroundColor; // Guarda a cor de fundo original. 
+            ConsoleColor fundoAlterado = ConsoleColor.DarkGray;
+            Console.WriteLine();
+            for (int i = 0; i < tab.linhas; i++)
+            {   
+                Console.Write(" " + (8 - i) + " ");
+                for (int j = 0; j < tab.colunas; j++)
+                {
+                    if (posicoesPossiveis[i, j]) // Tambem possivel ( if (posicoesPossiveis[i,j] == true) : está a validar se forem posicoes possiveis mostra o fundo de outra cor.
+                    {
+                        Console.BackgroundColor = fundoAlterado;
+                    } else
+                    {
+                        Console.BackgroundColor = fundoOriginal;
+                    }
+                        imprimirPeca(tab.peca(i, j));
+                              /*imprimirPeca(tab.peca(i, j) + " "); // (tab.peca) - Chama o metodo peca no objeto tab em Tabuleiro(ver acima).
+                               Este método foi criado pois como Peca é private, não permite acesso a ela fora da classe.*/
+                        Console.BackgroundColor = fundoOriginal;
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine("   a b c d e f g h");
+            Console.BackgroundColor = fundoOriginal;
         }
 
         public static PosicaoXadrez lerPosicaoXadrez()
@@ -44,16 +62,28 @@ namespace Xadrez_console
 
         public static void imprimirPeca(Peca peca)
         {
-            if (peca.cor == Cor.Branca)
+            if (peca == null)
             {
-                Console.Write(peca);
-            } else
+                Console.Write("- ");
+            }
+            else
             {
-                ConsoleColor aux = Console.ForegroundColor; // Guarda a cor atual na variavel aux
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write(peca);
-                Console.ForegroundColor = aux;  // repoe a cor inicial
-            } 
+                if (peca.cor == Cor.Branca)
+                {
+                    Console.Write(peca);
+                }
+                else
+                {
+                    ConsoleColor aux = Console.ForegroundColor; // Guarda a cor atual na variavel aux
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write(peca);
+                    Console.ForegroundColor = aux;  // repoe a cor inicial
+                }
+                Console.Write(" ");
+            }
+
+
+           
         }
     }
 }
