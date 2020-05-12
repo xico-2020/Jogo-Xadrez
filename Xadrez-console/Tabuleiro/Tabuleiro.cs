@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using xadrez;
 
 
 
@@ -14,7 +15,7 @@ namespace tabuleiro
         private Peca[,] pecas; // Matriz de peças. É privativa pois não pode ser acedida de fora.
 
 
-        public Tabuleiro( int linhas, int colunas)
+        public Tabuleiro(int linhas, int colunas)
         {
             this.linhas = linhas;
             this.colunas = colunas;
@@ -22,9 +23,9 @@ namespace tabuleiro
         }
 
         public Peca peca(int linha, int coluna) // Como Peca é private, para dar acesso a ela noutra classe tenho de criar este método.
-            // Recebe como argumento linha, coluna e retorna a matriz pecas na posição linha coluna.
+                                                // Recebe como argumento linha, coluna e retorna a matriz pecas na posição linha coluna.
         {
-            return pecas[linha, coluna]; 
+            return pecas[linha, coluna];
         }
 
         public Peca peca(Posicao pos) // Sobrecarga do método peca que só recebe pos da classe Posicao.
@@ -41,15 +42,28 @@ namespace tabuleiro
         {
             if (existePeca(pos))  // Faz dois testes, chama método existePeca que por sua vez chama o validarPosicao.
             {
-                throw new TabuleiroException("Já existe uma peça nessa posição"); 
+                throw new TabuleiroException("Já existe uma peça nessa posição");
             }
             pecas[pos.linha, pos.coluna] = p; // Acede a matriz na linha pos.linha, pos.coluna e recebe a peca p .
             p.posicao = pos;  // Informa a posicao da peça p na posição pos.
-        } 
+        }
+
+        public Peca RetirarPeca(Posicao pos)  // Método para retirar peca. não é Void é (Peca) pois posso voltar a precisar dessa peça.
+        {
+            if (peca(pos) == null)
+            {
+                return null;
+            }
+            Peca aux = peca(pos);
+            aux.posicao = null;  // indico que a peça já náo está no tabuleiro, foi retirada.
+            pecas[pos.linha, pos.coluna] = null; // marca a posição do tabuleiro onde estava a peça como vazia.
+            return aux;  // retorna a peça.
+
+        }
 
         public bool posicaoValida(Posicao pos)  // Valida se o numero de linha e coluna é válido.
         {
-            if (pos.linha<0 || pos.linha >= linhas || pos.coluna < 0 || pos.coluna >= colunas)
+            if (pos.linha < 0 || pos.linha >= linhas || pos.coluna < 0 || pos.coluna >= colunas)
             {
                 return false;
             }
@@ -66,6 +80,7 @@ namespace tabuleiro
                 throw new TabuleiroException("Posição inválida!");
             }
         }
-
     }
+
 }
+

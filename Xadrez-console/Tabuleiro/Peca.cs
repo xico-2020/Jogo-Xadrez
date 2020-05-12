@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using tabuleiro;
+using xadrez;
 
 namespace tabuleiro
 {
@@ -19,6 +19,11 @@ namespace tabuleiro
             this.cor = cor;
             this.qteMovimentos = 0; // inicializada a zero e por isso não foi passada como argumento acima.
 
+        }
+
+        public void incrementarQteMovimentos()
+        {
+            qteMovimentos++;
         }
 
     }
