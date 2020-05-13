@@ -10,40 +10,56 @@ namespace Xadrez_console
         {
             try
             {
+
+
                 PartidaDeXadrez partida = new PartidaDeXadrez();
+
+
 
                 while (!partida.terminada)
                 {
-                    Console.Clear();
-                    Tela.imprimirTabuleiro(partida.tab);
+                    try
+                    {
+                        Console.Clear();
+                        Tela.imprimirTabuleiro(partida.tab);
 
-                    Console.WriteLine();
-                    Console.Write("Origem: ");
-                    Posicao origem = Tela.lerPosicaoXadrez().toPosicao();  // Método que vai ler do teclado uma posição do xadrez e guarda numa posição de matriz.
+                        Console.WriteLine();
+                        Console.WriteLine("Turno: " + partida.turno);
+                        Console.WriteLine("Aguarda jogada : " + partida.jogadorAtual);
 
-                    bool[,] posicoesPossiveis = partida.tab.peca(origem).movimentosPossiveis(); // A partir mda posição de origem digitada, vai aceder à peça de origem no tabuleiro e ver quais os movimentos possiveis dela e guarda na matriz posicoesPossiveis.
+                        Console.WriteLine();
+                        Console.Write("Origem: ");
+                        Posicao origem = Tela.lerPosicaoXadrez().toPosicao();  // Método que vai ler do teclado uma posição do xadrez e guarda numa posição de matriz.
+                        partida.validarPosicaoOrigem(origem);
 
-                    Console.Clear();  // Estas duas linhas destinam-se a mostrar o tabuleiro com as posições possiveis de jogo noutra cor.
-                    Tela.imprimirTabuleiro(partida.tab, posicoesPossiveis);
+                        bool[,] posicoesPossiveis = partida.tab.peca(origem).movimentosPossiveis(); // A partir mda posição de origem digitada, vai aceder à peça de origem no tabuleiro e ver quais os movimentos possiveis dela e guarda na matriz posicoesPossiveis.
 
-                    Console.WriteLine();
-                    Console.Write("Destino: ");
-                    Posicao destino = Tela.lerPosicaoXadrez().toPosicao();
-                  
-                    partida.ExecutaMovimento(origem, destino);
+                        Console.Clear();  // Estas duas linhas destinam-se a mostrar o tabuleiro com as posições possiveis de jogo noutra cor.
+                        Tela.imprimirTabuleiro(partida.tab, posicoesPossiveis);
+
+                        Console.WriteLine();
+                        Console.Write("Destino: ");
+                        Posicao destino = Tela.lerPosicaoXadrez().toPosicao();
+                        partida.validarPosicaoDestino(origem, destino);
+
+                        partida.realizaJogada(origem, destino);
+
+                    }
+                    catch (TabuleiroException e)
+                    {
+                        Console.WriteLine(e.Message);
+                        Console.ReadLine();
+                    }
                 }
 
-                
             }
             catch (TabuleiroException e)
             {
                 Console.WriteLine(e.Message);
             }
 
-            
-
         }
-
 
     }
 }
+

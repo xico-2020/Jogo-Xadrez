@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization.Formatters;
 using System.Text;
 using xadrez;
 
@@ -24,6 +26,30 @@ namespace tabuleiro
         public void incrementarQteMovimentos()
         {
             qteMovimentos++;
+        }
+
+
+        public bool existeMovimentosPossiveis()
+        {
+            bool[,] mat = movimentosPossiveis();
+            for (int i = 0; i < tab.linhas; i++)
+            {
+                for (int j = 0; j < tab.colunas; j++)
+                {
+                    if (mat[i,j])  // se verdadeiro
+                    {
+                        return true;
+                    } 
+
+                }
+            }
+            return false;
+            
+        }
+
+        public bool podeMoverPara(Posicao pos)  // verifica se a peça se pode mover para uma determinada posição
+        {
+            return movimentosPossiveis()[pos.linha, pos.coluna]; // verifica os movimentos possiveis da peça e ve se na matriz posição linha e coluna é possivel.
         }
 
         public abstract bool[,] movimentosPossiveis();   // Método abstrato pois não tem implementação nesta Classe. Matriz de valores pois vai informar se a posição da peça a mover pode ser ou não. Retorna Verdadeiro ou Falso.
