@@ -57,8 +57,15 @@ namespace xadrez
             {
                 xeque = false;
             }
-            turno++;
-            mudaJogador();
+            if (testeXequemate(adversaria(jogadorAtual)))
+            {
+                terminada = true;
+            } else
+            {
+                turno++;
+                mudaJogador();
+            }
+            
         }
 
         public void desfazMovimento( Posicao origem, Posicao destino, Peca pecaCapturada)
@@ -180,6 +187,36 @@ namespace xadrez
             return false;
         }
 
+        public bool testeXequemate(Cor cor)
+        {
+            if (!estaEmCheque(cor))
+            {
+                return false;
+            }
+            foreach (Peca x in pecasEmJogo(cor))
+            {
+                bool[,] mat = x.movimentosPossiveis(); // Pra percorrer todas as peças x naas pecas em jogo essa cor, para encontrar uma que tire do cheque.
+                for (int i = 0; i < tab.linhas; i++)
+                {
+                    for (int j = 0; j < tab.colunas; j++)
+                    {
+                        if (mat[i, j])   // se verdadeiro ...
+                        {
+                            Posicao origem = x.posicao;
+                            Posicao destino = new Posicao(i, j);
+                            Peca pecaCapturada = executaMovimento(origem, destino);  // tentar executar um movimento da peça x para a nova posição (i, J).
+                            bool testeXeque = estaEmCheque(cor);  // Testa se esta em cheque o rei da cor jogada.
+                            desfazMovimento(origem, destino, pecaCapturada);  // Desfaz o movimento.
+                            if (!testeXeque) // Se o moviment feito não colocar o Rei em cheque, então existe movimento para tirar do cheque. Logo não está em xeque mate.
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            return true;  // caso não exista jogada, retorna verdadeiro. (Xeque mate)
+        }
         public void colocarNovaPeca(char coluna, int linha, Peca peca)
         {
             tab.colocarPeca(peca, new PosicaoXadrez(coluna, linha).toPosicao()); // coloca uma peça numa nova posição do tabuleiro
@@ -188,6 +225,13 @@ namespace xadrez
         private void colocarPecas()
         {
             colocarNovaPeca('c', 1, new Torre(tab, Cor.Branca));
+            colocarNovaPeca('d', 1, new Rei(tab, Cor.Branca));
+            colocarNovaPeca('h', 7, new Torre(tab, Cor.Branca));
+
+            colocarNovaPeca('a', 8, new Rei(tab, Cor.Preta));
+            colocarNovaPeca('b', 8, new Torre(tab, Cor.Preta));
+
+            /*colocarNovaPeca('c', 1, new Torre(tab, Cor.Branca));
             colocarNovaPeca('c', 2, new Torre(tab, Cor.Branca));
             colocarNovaPeca('d', 2, new Torre(tab, Cor.Branca));
             colocarNovaPeca('e', 2, new Torre(tab, Cor.Branca));
@@ -199,8 +243,8 @@ namespace xadrez
             colocarNovaPeca('d', 7, new Torre(tab, Cor.Preta));
             colocarNovaPeca('e', 7, new Torre(tab, Cor.Preta));
             colocarNovaPeca('e', 8, new Torre(tab, Cor.Preta));
-            colocarNovaPeca('d', 8, new Rei(tab, Cor.Preta));
-            
+            colocarNovaPeca('d', 8, new Rei(tab, Cor.Preta));*/
+
         }
 
     }
