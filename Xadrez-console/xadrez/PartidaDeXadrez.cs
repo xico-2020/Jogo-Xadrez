@@ -13,6 +13,7 @@ namespace xadrez
         public bool terminada { get; private set; }
         private HashSet<Peca> pecas;  // define o conjunto de peças (coleção de dados)
         private HashSet<Peca> capturadas;  // define o conjunto de peças capturadas
+        public bool xeque { get; private set; }
 
 
         public PartidaDeXadrez()
@@ -20,13 +21,14 @@ namespace xadrez
             tab = new Tabuleiro(8, 8);
             turno = 1;
             jogadorAtual = Cor.Branca;
-            terminada = false; // indica que a partida ainda não está terminada.   
+            terminada = false; // indica que a partida ainda não está terminada.  
+            xeque = false;
             pecas = new HashSet<Peca>();
             capturadas = new HashSet<Peca>();
             colocarPecas();
         }
 
-        public void executaMovimento(Posicao origem, Posicao destino) // Executa um movimento da posição X para Y.
+        public Peca executaMovimento(Posicao origem, Posicao destino) // Executa um movimento da posição X para Y.
         {
             Peca p = tab.RetirarPeca(origem);  // Retira a peça de onde estava.
             p.incrementarQteMovimentos();
@@ -36,15 +38,40 @@ namespace xadrez
             {
                 capturadas.Add(pecaCapturada);
             }
+            return pecaCapturada;
         }
 
         public void realizaJogada(Posicao origem, Posicao destino)
         {
-            executaMovimento(origem, destino);
+            Peca pecaCapturada = executaMovimento(origem, destino);
+
+            if (estaEmCheque(jogadorAtual))
+            {
+                desfazMovimento(origem, destino, pecaCapturada);
+                throw new TabuleiroException("Não pode colocar-se em cheque!");
+            }
+            if (estaEmCheque(adversaria(jogadorAtual)))  // se o cheque for para a equipa adversária pode ser, se for por em xeque a própria equipa, não pode.
+            {
+                xeque = true;
+            } else
+            {
+                xeque = false;
+            }
             turno++;
             mudaJogador();
         }
 
+        public void desfazMovimento( Posicao origem, Posicao destino, Peca pecaCapturada)
+        {
+            Peca p = tab.RetirarPeca(destino);  // Retira a peça na posição para onde tinha ido.
+            p.decrementarQteMovimentos();
+            if (pecaCapturada!= null)
+            {
+                tab.colocarPeca(pecaCapturada, destino);
+                capturadas.Remove(pecaCapturada);
+            }
+            tab.colocarPeca(p, origem);
+        }
 
         public void validarPosicaoOrigem(Posicao pos)
         {
@@ -107,6 +134,50 @@ namespace xadrez
             }
             aux.ExceptWith(pecasCapturadas(cor));  // exclui as peças capturadas.
             return aux;
+        }
+
+        private Cor adversaria(Cor cor)  //Método apenas usado nesta Classe. Qual é a cor adversária de uma dada cor?
+        {
+            if (cor == Cor.Branca)
+            {
+                return Cor.Preta;
+            } else
+            {
+                return Cor.Branca;
+            }
+        }
+
+        private Peca rei(Cor cor)  // devolve um Rei de uma determinada cor.
+        {
+            foreach(Peca x in pecasEmJogo(cor))  // para cada peça x no conjunto de peças em jogo ...
+            {
+                if (x is Rei)  // Se x é uma instancia da classe Rei ... (Peca é uma super Classe e Rei é uma sub Classe de Peca)
+                               // Para testar se uma variavel do tipo da super Classe é uma instancia de alguma sub Classe tenho que usar a palavra is.
+                {
+                    return x;  // é o Rei da cor.
+                }
+            }
+            return null;  // não encontrou nada.
+        }
+
+
+        public bool estaEmCheque(Cor cor) // analisa todos os movimentos possiveis das peças adversárias.
+        {
+            Peca R = rei(cor); // Peca R(variavel aqui criada) rebebe o rei da cor.
+            if (R == null)
+            {
+                throw new TabuleiroException("Não existe Rei da cor " + cor + "no tabuleiro!");
+            }
+
+            foreach (Peca x in pecasEmJogo(adversaria(cor)))  // ver pecas em jogo na cor adversaria.
+            {
+                bool[,] mat = x.movimentosPossiveis();  // matriz de movimentos possiveis.
+                if (mat[R.posicao.linha, R.posicao.coluna]) // Se na matriz de movimentos possiveis da peça adversária x na posição do Rei for verdadeiro, significa que pode fazer cheque ao Rei
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public void colocarNovaPeca(char coluna, int linha, Peca peca)
