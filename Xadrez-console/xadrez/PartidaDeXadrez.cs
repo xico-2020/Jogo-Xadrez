@@ -31,14 +31,37 @@ namespace xadrez
 
         public Peca executaMovimento(Posicao origem, Posicao destino) // Executa um movimento da posição X para Y.
         {
-            Peca p = tab.RetirarPeca(origem);  // Retira a peça de onde estava.
+            Peca p = tab.retirarPeca(origem);  // Retira a peça de onde estava.
             p.incrementarQteMovimentos();
-            Peca pecaCapturada = tab.RetirarPeca(destino); // Caso exista, retira a peça que estava no destino.
+            Peca pecaCapturada = tab.retirarPeca(destino); // Caso exista, retira a peça que estava no destino.
             tab.colocarPeca(p, destino); // Coloca peça de origem no destino.
             if (pecaCapturada != null)
             {
                 capturadas.Add(pecaCapturada);
             }
+
+            // #jogada especial roque pequeno;
+
+            if (p is Rei && destino.coluna == origem.coluna + 2)  // se for Rei e movi o Rei duas casas para a direita
+            {
+                Posicao origemT = new Posicao(origem.linha, origem.coluna + 3); // a origem da Torre é tres colunas à direita do Rei 
+                Posicao destinoT = new Posicao(origem.linha, origem.coluna + 1); // a posiçáo destino da Torre vai ser linha do Rei e coluna do Rei + 1
+                Peca T = tab.retirarPeca(origemT);
+                T.incrementarQteMovimentos();
+                tab.colocarPeca(T, destinoT);
+            }
+
+            // #jogada especial roque grande;
+
+            if (p is Rei && destino.coluna == origem.coluna - 2)  // se for Rei e movi o Rei duas casas para a direita
+            {
+                Posicao origemT = new Posicao(origem.linha, origem.coluna - 4); // a origem da Torre é tres colunas à direita do Rei 
+                Posicao destinoT = new Posicao(origem.linha, origem.coluna - 1); // a posiçáo destino da Torre vai ser linha do Rei e coluna do Rei + 1
+                Peca T = tab.retirarPeca(origemT);
+                T.incrementarQteMovimentos();
+                tab.colocarPeca(T, destinoT);
+            }
+
             return pecaCapturada;
         }
 
@@ -71,7 +94,7 @@ namespace xadrez
 
         public void desfazMovimento( Posicao origem, Posicao destino, Peca pecaCapturada)
         {
-            Peca p = tab.RetirarPeca(destino);  // Retira a peça na posição para onde tinha ido.
+            Peca p = tab.retirarPeca(destino);  // Retira a peça na posição para onde tinha ido.
             p.decrementarQteMovimentos();
             if (pecaCapturada!= null)
             {
@@ -79,6 +102,28 @@ namespace xadrez
                 capturadas.Remove(pecaCapturada);
             }
             tab.colocarPeca(p, origem);
+
+            // #jogada especial roque pequeno;
+
+            if (p is Rei && destino.coluna == origem.coluna + 2)  // se for Rei e movi o Rei duas casas para a direita
+            {
+                Posicao origemT = new Posicao(origem.linha, origem.coluna + 3); // a origem da Torre é tres colunas à direita do Rei 
+                Posicao destinoT = new Posicao(origem.linha, origem.coluna + 1); // a posiçáo destino da Torre vai ser linha do Rei e coluna do Rei + 1
+                Peca T = tab.retirarPeca(destinoT);
+                T.decrementarQteMovimentos();
+                tab.colocarPeca(T, origemT);
+            }
+
+            // #jogada especial roque grande;
+
+            if (p is Rei && destino.coluna == origem.coluna - 2)  // se for Rei e movi o Rei duas casas para a direita
+            {
+                Posicao origemT = new Posicao(origem.linha, origem.coluna - 4); // a origem da Torre é quatro colunas à esquerda do Rei e coluna do Rei - 1
+                Posicao destinoT = new Posicao(origem.linha, origem.coluna - 1);
+                Peca T = tab.retirarPeca(destinoT);
+                T.decrementarQteMovimentos();
+                tab.colocarPeca(T, origemT);
+            }
         }
 
         public void validarPosicaoOrigem(Posicao pos)
@@ -229,7 +274,7 @@ namespace xadrez
             colocarNovaPeca('b', 1, new Cavalo(tab, Cor.Branca));
             colocarNovaPeca('c', 1, new Bispo(tab, Cor.Branca));
             colocarNovaPeca('d', 1, new Dama(tab, Cor.Branca));
-            colocarNovaPeca('e', 1, new Rei(tab, Cor.Branca));
+            colocarNovaPeca('e', 1, new Rei(tab, Cor.Branca, this)); // auto referencia para a classe Rei (conf construtor Rei c/ ref partida)
             colocarNovaPeca('f', 1, new Bispo(tab, Cor.Branca));
             colocarNovaPeca('g', 1, new Cavalo(tab, Cor.Branca));
             colocarNovaPeca('h', 1, new Torre(tab, Cor.Branca));
@@ -248,7 +293,7 @@ namespace xadrez
             colocarNovaPeca('b', 8, new Cavalo(tab, Cor.Preta));
             colocarNovaPeca('c', 8, new Bispo(tab, Cor.Preta));
             colocarNovaPeca('d', 8, new Dama(tab, Cor.Preta));
-            colocarNovaPeca('e', 8, new Rei(tab, Cor.Preta));
+            colocarNovaPeca('e', 8, new Rei(tab, Cor.Preta, this));
             colocarNovaPeca('f', 8, new Bispo(tab, Cor.Preta));
             colocarNovaPeca('g', 8, new Cavalo(tab, Cor.Preta));
             colocarNovaPeca('h', 8, new Torre(tab, Cor.Preta));

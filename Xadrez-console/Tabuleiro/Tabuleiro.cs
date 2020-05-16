@@ -48,7 +48,7 @@ namespace tabuleiro
             p.posicao = pos;  // Informa a posicao da peça p na posição pos.
         }
 
-        public Peca RetirarPeca(Posicao pos)  // Método para retirar peca. não é Void é (Peca) pois posso voltar a precisar dessa peça.
+        public Peca retirarPeca(Posicao pos)  // Método para retirar peca. não é Void é (Peca) pois posso voltar a precisar dessa peça.
         {
             if (peca(pos) == null)
             {
