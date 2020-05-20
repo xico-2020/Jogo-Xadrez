@@ -1,85 +1,66 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Text;
-using tabuleiro;
+﻿using tabuleiro;
 
-namespace xadrez
-{
-    class Torre : Peca      // Herda da classe peça
-    {
-        public Torre(Tabuleiro tab, Cor cor) : base(tab, cor)  // Construtor que recebe o Tabuleiro tab e a Cor cor e vai passar esses dados para a classe Peca.
-        {     // Foi criado um objeto Rei, passando o tabuleiro e cor para a superClassse Peca.
+namespace xadrez {
+    class Torre : Peca {
 
+        public Torre(Tabuleiro tab, Cor cor) : base(tab, cor) {
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             return "T";
         }
 
-        private bool podeMover(Posicao pos)
-        {
+        private bool podeMover(Posicao pos) {
             Peca p = tab.peca(pos);
-            return p == null || p.cor != cor;  // retorna se é nula (não tem peça) ou se a peça é diferente da cor da peça em jogo.
-                                               // Na prática a peça pode ser movida se a casa destino estiver sem peça ou tiver uma peça adversária.
+            return p == null || p.cor != cor;
         }
 
-        public override bool[,] movimentosPossiveis()  // override porque está a sobreescrever o método da Classe Peca.
-        {
+        public override bool[,] movimentosPossiveis() {
             bool[,] mat = new bool[tab.linhas, tab.colunas];
+
             Posicao pos = new Posicao(0, 0);
 
             // acima
             pos.definirValores(posicao.linha - 1, posicao.coluna);
-            while (tab.posicaoValida(pos) && podeMover(pos))
-            {
+            while (tab.posicaoValida(pos) && podeMover(pos)) {
                 mat[pos.linha, pos.coluna] = true;
-                if (tab.peca(pos) != null && tab.peca(pos).cor != cor) // Caso encontre peça adversária, força a paragem do while.
-                {
+                if (tab.peca(pos) != null && tab.peca(pos).cor != cor) {
                     break;
                 }
-                pos.linha = pos.linha - 1;  // Vai para a proxima posição acima.
+                pos.linha = pos.linha - 1;
             }
 
             // abaixo
             pos.definirValores(posicao.linha + 1, posicao.coluna);
-            while (tab.posicaoValida(pos) && podeMover(pos))
-            {
+            while (tab.posicaoValida(pos) && podeMover(pos)) {
                 mat[pos.linha, pos.coluna] = true;
-                if (tab.peca(pos) != null && tab.peca(pos).cor != cor) // Caso encontre peça adversária, força a paragem do while.
-                {
+                if (tab.peca(pos) != null && tab.peca(pos).cor != cor) {
                     break;
                 }
-                pos.linha = pos.linha + 1;  // Vai para a proxima posição acima.
+                pos.linha = pos.linha + 1;
             }
 
             // direita
-            pos.definirValores(posicao.linha , posicao.coluna +1);
-            while (tab.posicaoValida(pos) && podeMover(pos))
-            {
+            pos.definirValores(posicao.linha, posicao.coluna + 1);
+            while (tab.posicaoValida(pos) && podeMover(pos)) {
                 mat[pos.linha, pos.coluna] = true;
-                if (tab.peca(pos) != null && tab.peca(pos).cor != cor) // Caso encontre peça adversária, força a paragem do while.
-                {
+                if (tab.peca(pos) != null && tab.peca(pos).cor != cor) {
                     break;
                 }
-                pos.coluna = pos.coluna + 1;  // Vai para a coluna ao lado.
+                pos.coluna = pos.coluna + 1;
             }
 
             // esquerda
             pos.definirValores(posicao.linha, posicao.coluna - 1);
-            while (tab.posicaoValida(pos) && podeMover(pos))
-            {
+            while (tab.posicaoValida(pos) && podeMover(pos)) {
                 mat[pos.linha, pos.coluna] = true;
-                if (tab.peca(pos) != null && tab.peca(pos).cor != cor) // Caso encontre peça adversária, força a paragem do while.
-                {
+                if (tab.peca(pos) != null && tab.peca(pos).cor != cor) {
                     break;
                 }
-                pos.coluna = pos.coluna - 1;  // Vai para a coluna ao lado.
+                pos.coluna = pos.coluna - 1;
             }
-
 
             return mat;
         }
-
     }
 }
