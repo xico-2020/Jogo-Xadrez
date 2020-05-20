@@ -1,7 +1,7 @@
-﻿using System;
+﻿//using System;
 using System.Collections.Generic; // para poder mexer com conjumtos
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
+//using System.Reflection.Metadata.Ecma335;
+//using System.Text;
 using tabuleiro;
 
 namespace xadrez

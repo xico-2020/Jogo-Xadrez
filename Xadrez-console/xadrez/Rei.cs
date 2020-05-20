@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Text;
 using tabuleiro;
 
 namespace xadrez
@@ -56,7 +56,7 @@ namespace xadrez
                 mat[pos.linha, pos.coluna] = true;
             }
 
-            // suddeste
+            // sudeste
             pos.definirValores(posicao.linha + 1, posicao.coluna + 1);
             if (tab.posicaoValida(pos) && podeMover(pos))
             {
@@ -71,7 +71,7 @@ namespace xadrez
             }
 
             // sudoeste
-            pos.definirValores(posicao.linha + 1, posicao.coluna + 1);
+            pos.definirValores(posicao.linha + 1, posicao.coluna - 1);
             if (tab.posicaoValida(pos) && podeMover(pos))
             {
                 mat[pos.linha, pos.coluna] = true;
